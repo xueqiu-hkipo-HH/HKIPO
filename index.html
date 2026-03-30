@@ -43,13 +43,13 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
 .lgitem{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#000}
 .lgdot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
 /* 日历 - 关键：overflow hidden防止溢出 */
-.calwrap{padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.calinner{min-width:560px;padding:0 4px}
-.dnames-wrap{background:#EEF3FA;padding:4px 0 2px;border-bottom:1px solid #C0D4EC;overflow:hidden;position:sticky;top:48px;z-index:40}
-.dnames{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;width:100%;padding:0 4px;box-sizing:border-box}
+.calwrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.calinner{min-width:560px;padding:0}
+.dnames-wrap{background:#EEF3FA;overflow:hidden}
+.dnames{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;padding:4px 0 2px;box-sizing:border-box}
 .dname{text-align:center;font-size:10px;font-weight:800;color:#5070A0;padding:3px 0}
 .dname.wk{color:#C01020}
-.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px}
 .dc{background:#fff;border:1.5px solid #B8CEEA;border-radius:6px;padding:4px 3px;min-height:80px;cursor:default;overflow:visible}
 .dc.hasev{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .dc.hasev:active{background:#E8F0FF}
@@ -138,7 +138,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   <button class="mtab" data-m="1">1月</button>
   <button class="mtab" data-m="2">2月</button>
   <button class="mtab on" data-m="3">3月</button>
-  <button class="mtab" data-m="4">4月</button>
+  
 </div>
 <div class="legend">
   <div class="lgitem"><div class="lgdot" style="background:#1040A0"></div>递表</div>
@@ -146,15 +146,15 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
   <div class="lgitem"><div class="lgdot" style="background:#A06000"></div>招股</div>
   <div class="lgitem"><div class="lgdot" style="background:#B00010"></div>上市</div>
 </div>
-<div class="dnames-wrap">
+<div class="calwrap">
+  <div class="calinner">
+  <div class="dnames-wrap" style="position:sticky;top:48px;z-index:40;background:#EEF3FA;padding:4px 0 2px;border-bottom:1px solid #C0D4EC">
   <div class="dnames">
     <div class="dname wk">日</div><div class="dname">一</div><div class="dname">二</div>
     <div class="dname">三</div><div class="dname">四</div><div class="dname">五</div>
     <div class="dname wk">六</div>
   </div>
-</div>
-<div class="calwrap">
-  <div class="calinner" style="padding:0 4px">
+  </div>
   <div class="calgrid" id="calgrid"></div>
   </div>
 </div>
@@ -428,33 +428,7 @@ document.querySelectorAll('.mtab').forEach(btn=>{
 });
 
 
-(function(){
-  var lxNames=new Set(LX.map(function(c){return c.name;}));
-  Object.keys(FILED).forEach(function(k){
-    FILED[k]=FILED[k].filter(function(f){
-      return !lxNames.has(f.full);
-    });
-  });
-})();
 
-buildCal(3);
-buildSummary();
-
-(function(){
-  var cw=document.querySelector('.calwrap');
-  var dn=document.querySelector('.dnames');
-  if(!cw||!dn)return;
-  // 让dnames宽度=calinner宽度
-  function syncWidth(){
-    var ci=document.querySelector('.calinner');
-    if(ci) dn.style.minWidth=ci.offsetWidth+'px';
-  }
-  syncWidth();
-  cw.addEventListener('scroll',function(){
-    dn.style.transform='translateX(-'+cw.scrollLeft+'px)';
-  });
-  window.addEventListener('resize',syncWidth);
-})();
 
 
 
